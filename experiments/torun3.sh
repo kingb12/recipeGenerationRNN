@@ -1,0 +1,3 @@
+bash encdec_noing10_bow_250_512_04drb.sh
+bash encdec_noing15_250_512_04drb.sh
+bash encdec_noing15_bow_250_512_04drb.sh

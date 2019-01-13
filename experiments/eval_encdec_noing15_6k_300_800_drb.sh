@@ -1,0 +1,94 @@
+# Template for running experiments.
+
+# meta options
+save_dir='/scratch/kingb12/' 
+model_name='encdec_noing15_6k_trV_300_800_04drb_2'
+# common adjustments
+max_epochs=200
+learning_rate=0.00001
+num_samples=8
+max_sample_length=25
+##################################################### Model Run Options #############################################
+# Dataset options
+gen_inputs='[4,209,512,1896,1743,143,865,443,30,201]'
+
+enc_inputs='/scratch/noing_data/rl_enc_inputs_6k_tr_0.th7'
+dec_inputs='/scratch/noing_data/rl_dec_inputs_6k_tr_0.th7'
+outputs='/scratch/noing_data/rl_outputs_6k_tr_0.th7'
+in_lengths='/scratch/noing_data/rl_in_lengths_0.th7'
+out_lengths='/scratch/noing_data/rl_out_lengths_0.th7'
+helper='/scratch/noing_data/rl_helper_6k_tr.th7'
+
+valid_enc_inputs='/scratch/noing_data/rl_enc_inputs_6k_tr_6.th7'
+valid_dec_inputs='/scratch/noing_data/rl_dec_inputs_6k_tr_6.th7'
+valid_outputs='/scratch/noing_data/rl_outputs_6k_tr_6.th7'
+valid_in_lengths='/scratch/noing_data/rl_in_lengths_6.th7'
+valid_out_lengths='/scratch/noing_data/rl_out_lengths_6.th7'
+
+test_enc_inputs='/scratch/noing_data/rl_enc_inputs_6k_tr_7.th7'
+test_dec_inputs='/scratch/noing_data/rl_dec_inputs_6k_tr_7.th7'
+test_outputs='/scratch/noing_data/rl_outputs_6k_tr_7.th7'
+test_in_lengths='/scratch/noing_data/rl_in_lengths_7.th7'
+test_out_lengths='/scratch/noing_data/rl_out_lengths_7.th7'
+
+max_in_len=15
+max_out_len=25
+min_out_len=1
+min_in_len=1
+batch_size=4
+
+init_enc_from=''
+init_dec_from=''
+wordvec_size=200
+hidden_size=512
+dropout=0.4
+dropout_loc='both'
+num_enc_layers=1
+num_dec_layers=1
+weights=''
+
+lr_decay=0.0
+algorithm='adam'
+
+print_loss_every=1000
+save_prefix=$save_dir$model_name'/'$model_name
+backup_save_dir=''
+print_acc_every=0
+print_examples_every=0
+valid_loss_every=1
+
+######################################################### Evaluation Options ##############################################
+
+max_gen_example_length=10
+out=$save_prefix'.json'
+
+######################################################## Actually Running #################################################
+
+cd ..
+mkdir $save_dir'/'$model_name
+
+th encdec_evaluation.lua \
+-train_enc_inputs $enc_inputs \
+-train_dec_inputs $dec_inputs \
+-train_outputs $outputs \
+-train_in_lengths $in_lengths \
+-train_out_lengths $out_lengths \
+-helper $helper \
+-enc $save_prefix'_enc.th7' \
+-dec $save_prefix'_dec.th7' \
+-valid_enc_inputs $valid_enc_inputs \
+-valid_dec_inputs $valid_dec_inputs \
+-valid_outputs $valid_outputs \
+-valid_in_lengths $valid_in_lengths \
+-valid_out_lengths $valid_out_lengths \
+-test_enc_inputs $test_enc_inputs \
+-test_dec_inputs $test_dec_inputs \
+-test_outputs $test_outputs \
+-test_in_lengths $test_in_lengths \
+-test_out_lengths $test_out_lengths \
+-num_samples $num_samples \
+-max_sample_length $max_sample_length \
+-gen_inputs $gen_inputs -generate_samples \
+-calculate_bleu -calculate_avg_alignment -calculate_n_pairs_bleu -calculate_perplexity \
+-no_arg_max \
+-out $out

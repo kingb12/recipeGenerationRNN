@@ -1,0 +1,2 @@
+bash encdec_noing10_bow_250_512_04dra.sh
+bash encdec_noing10_bow_250_512_04drbef.sh
